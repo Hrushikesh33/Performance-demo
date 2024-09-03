@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Web Vitals Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <p><img style="max-width: 360px" src="https://image.petmd.com/files/styles/978x550/public/2023-04/kitten-development.jpeg?w=2048&q=75" alt="Kitten" /></p>
+    <p>Text below image</p>
+    <script type="module">
+        import { onCLS, onINP, onLCP } from 'https://unpkg.com/web-vitals@4/dist/web-vitals.attribution.js?module';
+
+            onCLS(console.log, true);
+            onINP(console.log);
+            onLCP(console.log);
+    </script>
+</body>
+</html>
