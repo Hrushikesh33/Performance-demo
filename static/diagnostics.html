@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Web Vitals Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Google tag (gtag.js) -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-1QDDHFB2XH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-1QDDHFB2XH');
+    </script> -->
+</head>
+
+<body>
+    <p><img style="max-width: 360px"
+            src="https://image.petmd.com/files/styles/978x550/public/2023-04/kitten-development.jpeg?w=2048&q=75"
+            alt="Kitten" /></p>
+    <p>Text below image</p>
+    <script type="module">
+        import { onCLS, onINP, onLCP } from 'https://unpkg.com/web-vitals@4/dist/web-vitals.attribution.js?module';
+        function getDebugInfo(name, attribution) {
+            if (attribution) {
+                
+                if (name === 'LCP') {
+                    console.log('LCP', attribution);
+                    return {
+                        debug_url: attribution.url,
+                        debug_time_to_first_byte: attribution.timeToFirstByte,
+                        debug_resource_load_delay: attribution.resourceLoadDelay,
+                        debug_resource_load_time: attribution.resourceLoadDuration,
+                        debug_element_render_delay: attribution.elementRenderDelay,
+                        debug_target: attribution.element || '(not set)',
+                    };
+                } else if (name === 'INP') {
+                    return {
+                        debug_event: attribution.interactionType,
+                        debug_time: Math.round(attribution.interactionTime),
+                        debug_load_state: attribution.loadState,
+                        debug_target: attribution.interactionTarget || '(not set)',
+                        debug_interaction_delay: Math.round(attribution.inputDelay),
+                        debug_processing_duration: Math.round(attribution.processingDuration),
+                        debug_presentation_delay: Math.round(attribution.presentationDelay),
+                    };
+                } else if (name === 'CLS') {
+                    return {
+                        debug_time: attribution.largestShiftTime,
+                        debug_load_state: attribution.loadState,
+                        debug_target: attribution.largestShiftTarget || '(not set)',
+                    }
+                }
+            }
+            // Return default/empty params in case there is no attribution.
+            return {
+                debug_target: '(not set)',
+            };
+        }
+
+        async function sendToEndpoint({ name, delta, value, id, entries, attribution }) {
+            const data = {
+                name,
+                delta,
+                value,
+                id,
+                ...getDebugInfo(name, attribution)
+            };
+
+            try {
+                const response = await fetch('/api/log-web-vitals', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                console.log('Web Vitals sent to endpoint successfully');
+            } catch (error) {
+                console.error('Error sending Web Vitals to endpoint:', error);
+            }
+        }
+
+        onLCP(sendToEndpoint);
+        onINP(sendToEndpoint);
+        onCLS(sendToEndpoint);
+    </script>
+</body>
+
+</html>
